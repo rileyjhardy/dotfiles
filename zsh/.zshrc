@@ -21,10 +21,7 @@ source $(brew --prefix nvm)/nvm.sh
 fpath+=($HOME/.zsh/pure)
  
 export EDITOR="cursor"
- 
-export GITHUB_TOKEN=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
-export BUGSNAG_AUTH_TOKEN=7249af80-1010-48bd-b197-90f3fc6a21d4
-export SHORTCUT_API_KEY=657b1b82-fef3-41fb-893a-75dba85d0357
+
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
