@@ -1,1 +1,1 @@
-Run `curl -fsSL https://raw.githubusercontent.com/rileyjhardy/dotfiles/main/setup.sh | bash` to install.
+Run `curl https://raw.githubusercontent.com/rileyjhardy/dotfiles/main/setup.sh | bash` to install.

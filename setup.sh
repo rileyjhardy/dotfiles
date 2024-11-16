@@ -8,13 +8,13 @@ NC='\033[0m' # No Color
 
 # Function to print status messages
 print_status() {
-    echo -e "${GREEN}==>${NC} $1"
+  echo -e "${GREEN}==>${NC} $1"
 }
 
 # Check for required commands
 if ! command -v stow >/dev/null 2>&1; then
-    print_status "Installing stow using Homebrew..."
-    brew install stow
+  print_status "Installing stow using Homebrew..."
+  brew install stow
 fi
 
 # Configuration
@@ -24,19 +24,19 @@ PACKAGES=("zsh" "nvim" "git")
 
 # Clone or update dotfiles repository
 if [ ! -d "$DOTFILES_DIR" ]; then
-    print_status "Cloning dotfiles repository..."
-    git clone "$DOTFILES_REPO" "$DOTFILES_DIR"
+  print_status "Cloning dotfiles repository..."
+  git clone "$DOTFILES_REPO" "$DOTFILES_DIR"
 else
-    print_status "Updating existing dotfiles repository..."
-    cd "$DOTFILES_DIR"
-    git pull
+  print_status "Updating existing dotfiles repository..."
+  cd "$DOTFILES_DIR"
+  git pull
 fi
 
 # Stow packages
 cd "$DOTFILES_DIR"
 for package in "${PACKAGES[@]}"; do
-    print_status "Stowing $package configuration..."
-    stow -R --target="$HOME" "$package"
+  print_status "Stowing $package configuration..."
+  stow -R --target="$HOME" "$package"
 done
 
 print_status "Dotfiles setup completed successfully!"
