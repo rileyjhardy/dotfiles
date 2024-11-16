@@ -13,15 +13,8 @@ print_status() {
 
 # Check for required commands
 if ! command -v stow >/dev/null 2>&1; then
-    echo "stow is not installed."
-    read -p "Would you like to install stow now using Homebrew? (y/n) " -n 1 -r
-    echo    # Move to a new line
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-        brew install stow
-    else
-        echo "Exiting: stow is required for this script."
-        exit 1
-    fi
+    print_status "Installing stow using Homebrew..."
+    brew install stow
 fi
 
 # Configuration
