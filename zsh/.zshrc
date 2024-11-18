@@ -100,6 +100,7 @@ alias hruns='heroku run rails c -r staging'
 alias hlogsp='heroku logs --tail -r production'
 alias hlogss='heroku logs --tail -r staging'
 alias n='nvim'
+alias c='cursor'
 
 plugins=(git wd)
  
