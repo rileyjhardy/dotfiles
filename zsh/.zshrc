@@ -16,9 +16,10 @@ export PATH="/Users/rhardy/wm/watermarkchurch/tools/scripts:$PATH"
  
 export NVM_DIR=~/.nvm
 source $(brew --prefix nvm)/nvm.sh
- 
-# .zshrc
-fpath+=($HOME/.zsh/pure)
+
+if [ -f ~/.dotfiles/.envrc ]; then
+  source ~/.dotfiles/.envrc
+fi
  
 export EDITOR="cursor"
 
