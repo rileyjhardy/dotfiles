@@ -4,24 +4,21 @@
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
  
 # Path to your oh-my-zsh installation.
-export ZSH="/Users/rhardy/.oh-my-zsh"
-
-export BROWSER="/Applications/Arc.app/Contents/MacOS/Arc"
- 
+export ZSH="/Users/rileyjhardy/.oh-my-zsh"
+export BROWSER="/Applications/Arc.app/Contents/MacOS/Arc" 
 export PATH="/usr/local/bin:/usr/local/sbin:~/bin:$PATH"
-
 export PATH="/opt/homebrew/bin:$PATH"
-
-export PATH="/Users/rhardy/wm/watermarkchurch/tools/scripts:$PATH"
+export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
+# export PATH="/Users/rhardy/wm/watermarkchurch/tools/scripts:$PATH"
  
-export NVM_DIR=~/.nvm
-source $(brew --prefix nvm)/nvm.sh
-
+# load environment variables
 if [ -f ~/.dotfiles/.env.sh ]; then
   . ~/.dotfiles/.env.sh
 fi
- 
+
+# misc exports
 export EDITOR="cursor"
+export WATERMARK_APP_ROOT=~/watermark
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -74,7 +71,32 @@ mcurl() {
     -H "Authorization: Bearer $CONTENTFUL_MANAGEMENT_TOKEN" $@ \
     https://api.contentful.com/spaces/$CONTENTFUL_SPACE_ID$path
 }
+
+# aliases
+alias guard="bin/run bundle exec guard -g autofix rspe" 
+alias dtest="docker compose run --rm web bundle exec rspec"
+alias test="bundle exec rspec"
+alias ga="git add"
+alias gc="git commit -m"
+alias dcs="docker compose stop"
+# alias run='docker compose run --rm web bundle exec'
+alias hrunp='heroku run rails c -r production'
+alias hruns='heroku run rails c -r staging'
+alias hlogsp='heroku logs --tail -r production'
+alias hlogss='heroku logs --tail -r staging'
+alias n='nvim'
+alias c='cursor'
+
+plugins=(git wd asdf)
+
+# completions for asdf
+# see https://asdf-vm.com/manage/core.html
+
+. "$HOME/.asdf/asdf.sh"
  
+source $ZSH/oh-my-zsh.sh
+ 
+# utility functions
 ccurl() {
   [[ -z "$CONTENTFUL_ACCESS_TOKEN" ]] && logerr "no access token set" && return -1;
   [[ -z "$CONTENTFUL_SPACE_ID" ]] && logerr "no space ID set" && return -1;
@@ -85,29 +107,6 @@ ccurl() {
  
   curlv -H "Authorization: Bearer $CONTENTFUL_ACCESS_TOKEN" $@ https://cdn.contentful.com/spaces/$CONTENTFUL_SPACE_ID$path
 }
- 
-alias guard="docker compose run --rm web bundle exec guard -g autofix red_green_refactor"
- 
-alias dtest="docker compose run --rm web bundle exec rspec"
-alias test="bundle exec rspec"
-alias ga="git add"
-alias gc="git commit -m"
-alias dcs="docker compose stop"
- 
-alias run='docker compose run --rm web bundle exec'
- 
-alias hrunp='heroku run rails c -r production'
-alias hruns='heroku run rails c -r staging'
-alias hlogsp='heroku logs --tail -r production'
-alias hlogss='heroku logs --tail -r staging'
-alias n='nvim'
-alias c='cursor'
-
-plugins=(git wd)
- 
-source $ZSH/oh-my-zsh.sh
- 
-export WATERMARK_APP_ROOT=~/wm
  
 dcup() {
   case $1 in
@@ -128,7 +127,9 @@ bclean() {
   
   if [ -n "$merged_branches" ]; then
     echo "Deleting merged branches:"
-    echo "$merged_branches" | grep -vE '^(master|develop)$' | while read branch; do
+    echo "$merged_branches" | grep -vE '^\s*(main|staging)$' | while read branch; do
+      # Trim whitespace from branch name
+      branch=$(echo "$branch" | xargs)
       echo "Deleting branch: $branch"
       git branch -d "$branch"
     done
@@ -136,28 +137,109 @@ bclean() {
     echo "No merged branches found."
   fi
 }
- 
-eval "$(rbenv init -)"
+
+# Function to safely clean up local git branches
+# Preserves main and staging branches
+cleanup_git_branches() {
+  local current_branch=$(git rev-parse --abbrev-ref HEAD)
+  local protected_branches=("main" "master" "staging" "develop" "$current_branch")
+  local dry_run=false
+  local force_delete=false
+  
+  # Process options
+  while [[ "$#" -gt 0 ]]; do
+    case $1 in
+      -d|--dry-run) dry_run=true; shift ;;
+      -f|--force) force_delete=true; shift ;;
+      *) echo "Unknown parameter: $1"; return 1 ;;
+    esac
+  done
+  
+  echo "🔍 Fetching latest changes from remote..."
+  git fetch -p
+  
+  # Get list of merged branches
+  echo "🔍 Finding merged branches..."
+  local branches_to_delete=()
+  
+  # Read merged branches - zsh compatible
+  git branch --merged | while read line; do
+    # Remove leading whitespace and asterisk
+    branch=$(echo "$line" | sed 's/^[ *]*//')
+    
+    # Skip empty lines
+    if [[ -z "$branch" ]]; then
+      continue
+    fi
+    
+    # Check if branch is protected
+    local is_protected=false
+    for protected in "${protected_branches[@]}"; do
+      if [[ "$branch" == "$protected" ]]; then
+        is_protected=true
+        break
+      fi
+    done
+    
+    # Add to list if not protected
+    if [[ "$is_protected" == false ]]; then
+      branches_to_delete+=("$branch")
+    fi
+  done
+  
+  # Handle case where no branches to delete
+  if [[ ${#branches_to_delete[@]} -eq 0 ]]; then
+    echo "✅ No branches to clean up!"
+    return 0
+  fi
+  
+  # Display branches to delete
+  echo "🗑️  The following branches will be deleted:"
+  for branch in "${branches_to_delete[@]}"; do
+    echo "   $branch"
+  done
+  
+  # Confirm deletion unless dry run
+  if [[ "$dry_run" == true ]]; then
+    echo "🔍 Dry run completed. No branches were deleted."
+    return 0
+  fi
+  
+  # zsh read -q is similar to bash read -n 1
+  echo -n "❓ Do you want to proceed? (y/n) "
+  read -q REPLY
+  echo
+  
+  if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    echo "⚠️ Operation cancelled."
+    return 1
+  fi
+  
+  # Delete branches
+  local delete_flag="-d"
+  if [[ "$force_delete" == true ]]; then
+    delete_flag="-D"
+    echo "⚠️ Using force delete mode!"
+  fi
+  
+  echo "🗑️ Deleting branches..."
+  for branch in "${branches_to_delete[@]}"; do
+    if git branch $delete_flag "$branch"; then
+      echo "   ✅ Deleted: $branch"
+    else
+      echo "   ❌ Failed to delete: $branch"
+      echo "      (Use --force to force deletion of unmerged branches)"
+    fi
+  done
+  
+  echo "🎉 Cleanup complete!"
+}
+
+# Usage examples:
+# cleanup_git_branches         # Standard cleanup
+# cleanup_git_branches --dry-run   # Show what would be deleted without actually deleting
+# cleanup_git_branches --force     # Force delete branches even if not fully merged
  
 eval "$(direnv hook zsh)"
- 
-# alias python=/usr/bin/python3
-export PATH="${HOME}/.pyenv/shims:${PATH}"
- 
-export PATH="$PATH:/Users/rhardy/development/flutter/bin"
- 
-export PATH="$PATH:/Users/rhardy/.cargo/bin"
-
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/rhardy/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/rhardy/google-cloud-sdk/path.zsh.inc'; fi
-
-# The next line enables shell command completion for gcloud.
-if [ -f '/Users/rhardy/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/rhardy/google-cloud-sdk/completion.zsh.inc'; fi
-
-
-# Herd injected PHP 8.3 configuration.
-export HERD_PHP_83_INI_SCAN_DIR="/Users/rhardy/Library/Application Support/Herd/config/php/83/"
-
-
-# Herd injected PHP binary.
-export PATH="/Users/rhardy/Library/Application Support/Herd/bin/":$PATH
+# Added by Windsurf
+export PATH="/Users/rileyjhardy/.codeium/windsurf/bin:$PATH"
