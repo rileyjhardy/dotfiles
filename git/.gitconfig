@@ -12,7 +12,7 @@
 [diff]
 	algorithm = histogram
 [core]
-	excludesfile = /Users/rhardy/.gitignore_global
+	excludesfile = /Users/rileyjhardy/.gitignore_global
 	editor = code --wait
 [difftool "sourcetree"]
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
@@ -21,4 +21,4 @@
 	cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
 	trustExitCode = true
 [init]
-	templateDir = /Users/rhardy/.git-templates/git-secrets
+	templateDir = /Users/rileyjhardy/.git-templates/git-secrets
