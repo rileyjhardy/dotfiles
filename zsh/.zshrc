@@ -1,5 +1,3 @@
-
- 
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
  
@@ -9,6 +7,8 @@ export BROWSER="/Applications/Arc.app/Contents/MacOS/Arc"
 export PATH="/usr/local/bin:/usr/local/sbin:~/bin:$PATH"
 export PATH="/opt/homebrew/bin:$PATH"
 export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
+export PATH="$HOME/.asdf/shims:$PATH"
+
 # export PATH="/Users/rhardy/wm/watermarkchurch/tools/scripts:$PATH"
  
 # load environment variables
@@ -58,7 +58,7 @@ execv() {
   logv "$@"
   "$@"
 }
- 
+
 mcurl() {
   [[ -z "$CONTENTFUL_MANAGEMENT_TOKEN" ]] && logerr "no management token set" && return -1;
   [[ -z "$CONTENTFUL_SPACE_ID" ]] && logerr "no space ID set" && return -1;
@@ -86,6 +86,14 @@ alias hlogsp='heroku logs --tail -r production'
 alias hlogss='heroku logs --tail -r staging'
 alias n='nvim'
 alias c='cursor'
+alias run='bin/run'
+alias down='docker compose -f docker-compose.dev.yml down'
+
+fix() {
+  bin/run bundle exec rubocop --autocorrect
+  bin/run bundle exec rubocop -A
+  bin/run bundle exec erb_lint --lint-all --autocorrect
+}
 
 plugins=(git wd asdf)
 
@@ -239,7 +247,14 @@ cleanup_git_branches() {
 # cleanup_git_branches         # Standard cleanup
 # cleanup_git_branches --dry-run   # Show what would be deleted without actually deleting
 # cleanup_git_branches --force     # Force delete branches even if not fully merged
+
+eval "$(pyenv init -)"
+if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
  
 eval "$(direnv hook zsh)"
 # Added by Windsurf
 export PATH="/Users/rileyjhardy/.codeium/windsurf/bin:$PATH"
+export PATH="/Users/rileyjhardy/.asdf/installs/golang/1.24.1/packages/bin:$PATH"
+
+# tmux development environment
+source ~/.dotfiles/zsh/functions/dev_ns.sh
