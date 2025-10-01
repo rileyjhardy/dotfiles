@@ -1,0 +1,8 @@
+{
+  "name": "rileys-snippets",
+  "contributes": {
+    "snippets": [
+      { "language": "all", "path": "./eruby.json" }
+    ]
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "Embedded Ruby Eval": {
+    "prefix": "squid",
+    "body": "<%= $1 %>"
+  },
+  "Embedded Ruby": {
+    "prefix": "snow",
+    "body": "<% $1 %>"
+  },
+  "Embedded Ruby comment": {
+    "prefix": "cmt",
+    "body": "<%# $1 %>"
+  }
+}

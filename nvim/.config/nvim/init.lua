@@ -285,6 +285,7 @@ require('lazy').setup({
     },
   },
 
+  { 'github/copilot.vim' },
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
   --
   -- This is often very useful to both group configuration, as well as handle
@@ -380,7 +381,7 @@ require('lazy').setup({
       { 'nvim-telescope/telescope-ui-select.nvim' },
 
       -- Useful for getting pretty icons, but requires a Nerd Font.
-      { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
+      { 'DaikyXendo/nvim-material-icon' },
     },
     config = function()
       -- Telescope is a fuzzy finder that comes with a lot of different things that
@@ -815,12 +816,16 @@ require('lazy').setup({
           -- `friendly-snippets` contains a variety of premade snippets.
           --    See the README about individual language/framework/plugin snippets:
           --    https://github.com/rafamadriz/friendly-snippets
-          -- {
-          --   'rafamadriz/friendly-snippets',
-          --   config = function()
-          --     require('luasnip.loaders.from_vscode').lazy_load()
-          --   end,
-          -- },
+          {
+            'rafamadriz/friendly-snippets',
+            config = function()
+              require('luasnip.loaders.from_vscode').lazy_load()
+              require('luasnip.loaders.from_vscode').lazy_load { paths = { '~/.config/nvim/snippets' } }
+              -- Load Rails snippets for Ruby files
+              require('luasnip').filetype_extend('ruby', { 'rails' })
+              require('luasnip').filetype_extend('eruby', { 'ejs' })
+            end,
+          },
         },
         opts = {},
       },
@@ -851,7 +856,7 @@ require('lazy').setup({
         -- <c-k>: Toggle signature help
         --
         -- See :h blink-cmp-config-keymap for defining your own keymap
-        preset = 'default',
+        preset = 'enter',
 
         -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
         --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
@@ -893,18 +898,46 @@ require('lazy').setup({
   },
 
   {
-    'shawilly/ponokai',
-    lazy = false,
-    priority = 1000,
-    config = function()
-      -- Optionally configure and load the colorscheme
-      -- directly inside the plugin declaration.
-      vim.g.sonokai_enable_italic = true
-      vim.g.ponokai_style = 'default'
-      vim.cmd.colorscheme 'ponokai'
-    end,
+    'f-person/git-blame.nvim',
+    -- load the plugin at startup
+    event = 'VeryLazy',
+    -- Because of the keys part, you will be lazy loading this plugin.
+    -- The plugin will only load once one of the keys is used.
+    -- If you want to load the plugin at startup, add something like event = "VeryLazy",
+    -- or lazy = false. One of both options will work.
+    opts = {
+      -- your configuration comes here
+      -- for example
+      enabled = true, -- if you want to enable the plugin
+      message_template = ' <summary> • <date> • <author> • <<sha>>', -- template for the blame message, check the Message template section for more options
+      date_format = '%r', -- template for the date, check Date format section for more options
+      virtual_text_column = 1, -- virtual text start column, check Start virtual text at column section for more options
+    },
   },
 
+  {
+    'kdheepak/lazygit.nvim',
+    lazy = true,
+    cmd = {
+      'LazyGit',
+      'LazyGitConfig',
+      'LazyGitCurrentFile',
+      'LazyGitFilter',
+      'LazyGitFilterCurrentFile',
+    },
+    -- optional for floating window border decoration
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+    },
+    -- setting the keybinding for LazyGit with 'keys' is recommended in
+    -- order to load the plugin when the command is run for the first time
+    keys = {
+      { '<leader>lg', '<cmd>LazyGit<cr>', desc = 'LazyGit' },
+    },
+  },
+  { 'catppuccin/nvim', name = 'catppuccin', priority = 1000, config = function()
+    vim.cmd.colorscheme 'catppuccin'
+  end },
   -- Highlight todo, notes, etc in comments
   -- { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
@@ -986,6 +1019,32 @@ require('lazy').setup({
   -- require 'kickstart.plugins.autopairs',
   require 'kickstart.plugins.neo-tree',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+
+  -- Custom neo-tree configuration to show hidden files
+  {
+    'nvim-neo-tree/neo-tree.nvim',
+    opts = {
+      filesystem = {
+        filtered_items = {
+          visible = true, -- when true, they will just be displayed differently than normal items
+          hide_dotfiles = false, -- this will hide dotfiles and dotfolders
+          hide_gitignored = false, -- this will hide files and folders that are in .gitignore
+          hide_hidden = false, -- this will hide files and folders starting with a dot
+          hide_by_name = {
+            -- "node_modules"
+          },
+          hide_by_pattern = { -- uses glob style patterns
+            -- "*.meta",
+            -- "*/src/*/index.ts"
+          },
+          never_show = { -- remains hidden even if visible is toggled to true
+            -- ".DS_Store",
+            -- "thumbs.db"
+          },
+        },
+      },
+    },
+  },
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
