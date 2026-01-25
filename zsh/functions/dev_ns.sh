@@ -23,12 +23,9 @@ dev_ns() {
     # Window 2: Rails console
     tmux new-window -t dev_ns -n 'console'
     tmux send-keys -t dev_ns:console 'bin/run rails console' Enter
+    tmux split-window -h -t dev_ns:console  # Split console window horizontally
 
-    # Window 3: LazyGit
-    tmux new-window -t dev_ns -n 'lazygit'
-    tmux send-keys -t dev_ns:lazygit 'lazygit' Enter
-
-    # Window 4: Neovim
+    # Window 3: Neovim
     tmux new-window -t dev_ns -n 'nvim'
     tmux send-keys -t dev_ns:nvim 'nvim .' Enter
 

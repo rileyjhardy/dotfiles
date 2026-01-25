@@ -7,7 +7,7 @@ export BROWSER="/Applications/Arc.app/Contents/MacOS/Arc"
 export PATH="/usr/local/bin:/usr/local/sbin:~/bin:$PATH"
 export PATH="/opt/homebrew/bin:$PATH"
 export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
-export PATH="$HOME/.asdf/shims:$PATH"
+# export PATH="$HOME/.asdf/shims:$PATH"
 
 # export PATH="/Users/rhardy/wm/watermarkchurch/tools/scripts:$PATH"
  
@@ -95,12 +95,12 @@ fix() {
   bin/run bundle exec erb_lint --lint-all --autocorrect
 }
 
-plugins=(git wd asdf)
+plugins=(git wd)
 
 # completions for asdf
 # see https://asdf-vm.com/manage/core.html
 
-. "$HOME/.asdf/asdf.sh"
+# . "$HOME/.asdf/asdf.sh"
  
 source $ZSH/oh-my-zsh.sh
  
@@ -254,7 +254,8 @@ if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -
 eval "$(direnv hook zsh)"
 # Added by Windsurf
 export PATH="/Users/rileyjhardy/.codeium/windsurf/bin:$PATH"
-export PATH="/Users/rileyjhardy/.asdf/installs/golang/1.24.1/packages/bin:$PATH"
+# export PATH="/Users/rileyjhardy/.asdf/installs/golang/1.24.1/packages/bin:$PATH"
 
 # tmux development environment
 source ~/.dotfiles/zsh/functions/dev_ns.sh
+export PATH="$HOME/.local/bin:$PATH"
