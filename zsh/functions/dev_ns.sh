@@ -29,6 +29,10 @@ dev_ns() {
     tmux new-window -t dev_ns -n 'nvim'
     tmux send-keys -t dev_ns:nvim 'nvim .' Enter
 
+    # Window 4: Claude Code
+    tmux new-window -t dev_ns -n 'claude'
+    tmux send-keys -t dev_ns:claude 'claude' Enter
+
     # Attach to the session
     echo "Use 'space-t' as prefix key, 'space-i' to switch windows"
     echo "In the dev-server window, run 'bin/dev' to start the development server"

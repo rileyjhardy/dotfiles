@@ -198,7 +198,7 @@ vim.keymap.set("n", "<C-h>", "<C-w><C-h>", { desc = "Move focus to the left wind
 vim.keymap.set("n", "<C-l>", "<C-w><C-l>", { desc = "Move focus to the right window" })
 vim.keymap.set("n", "<C-j>", "<C-w><C-j>", { desc = "Move focus to the lower window" })
 vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper window" })
-vim.keymap.set("n", "<C-b>", "<Cmd>Neotree toggle<CR>")
+vim.keymap.set("n", "<leader>e", "<Cmd>Neotree toggle<CR>", { desc = "Toggle file [E]xplorer" })
 
 -- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
 -- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
@@ -289,6 +289,7 @@ require("lazy").setup({
 	{
 		"coder/claudecode.nvim",
 		dependencies = { "folke/snacks.nvim" },
+		event = "VeryLazy",
 		opts = {
 			terminal = {
 				provider = "none",
@@ -367,6 +368,7 @@ require("lazy").setup({
 			-- Document existing key chains
 			spec = {
 				{ "<leader>a", group = "[A]I Claude" },
+				{ "<leader>g", group = "[G]it" },
 				{ "<leader>s", group = "[S]earch" },
 				{ "<leader>t", group = "[T]oggle" },
 				{ "<leader>h", group = "Git [H]unk", mode = { "n", "v" } },
@@ -954,6 +956,17 @@ require("lazy").setup({
 		keys = {
 			{ "<leader>lg", "<cmd>LazyGit<cr>", desc = "LazyGit" },
 		},
+	},
+	{
+		"sindrets/diffview.nvim",
+		cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewToggleFiles", "DiffviewFocusFiles", "DiffviewFileHistory" },
+		keys = {
+			{ "<leader>gd", "<cmd>DiffviewOpen<cr>", desc = "[G]it [D]iffview" },
+			{ "<leader>gh", "<cmd>DiffviewFileHistory %<cr>", desc = "[G]it File [H]istory" },
+			{ "<leader>gH", "<cmd>DiffviewFileHistory<cr>", desc = "[G]it Branch [H]istory" },
+			{ "<leader>gc", "<cmd>DiffviewClose<cr>", desc = "[G]it Diffview [C]lose" },
+		},
+		opts = {},
 	},
 	{
 		"cpea2506/one_monokai.nvim",

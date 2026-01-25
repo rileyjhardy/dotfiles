@@ -17,7 +17,7 @@ if [ -f ~/.dotfiles/.env.sh ]; then
 fi
 
 # misc exports
-export EDITOR="cursor"
+export EDITOR="nvim"
 export WATERMARK_APP_ROOT=~/watermark
 
 # Set name of the theme to load --- if set to "random", it will
