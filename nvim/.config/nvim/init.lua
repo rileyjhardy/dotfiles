@@ -372,6 +372,7 @@ require("lazy").setup({
 				{ "<leader>s", group = "[S]earch" },
 				{ "<leader>t", group = "[T]oggle" },
 				{ "<leader>h", group = "Git [H]unk", mode = { "n", "v" } },
+				{ "<leader>y", group = "[Y]ank with context" },
 			},
 		},
 	},
@@ -769,6 +770,18 @@ require("lazy").setup({
 					end,
 				},
 			})
+
+			-- Manually set up ruby_lsp using Neovim 0.11+ native LSP API
+			vim.lsp.config("ruby_lsp", {
+				cmd = { "/Users/rileyjhardy/.asdf/shims/ruby-lsp" },
+				filetypes = { "ruby" },
+				root_markers = { "Gemfile", ".git" },
+				init_options = {
+					formatter = "auto",
+					linters = { "rubocop" },
+				},
+			})
+			vim.lsp.enable("ruby_lsp")
 		end,
 	},
 
@@ -804,6 +817,7 @@ require("lazy").setup({
 			end,
 			formatters_by_ft = {
 				lua = { "stylua" },
+				ruby = { "rubocop" },
 				-- Conform can also run multiple formatters sequentially
 				-- python = { "isort", "black" },
 				--
@@ -966,7 +980,60 @@ require("lazy").setup({
 			{ "<leader>gH", "<cmd>DiffviewFileHistory<cr>", desc = "[G]it Branch [H]istory" },
 			{ "<leader>gc", "<cmd>DiffviewClose<cr>", desc = "[G]it Diffview [C]lose" },
 		},
-		opts = {},
+		config = function()
+			-- Auto-refresh diffview when files change (for Claude Code integration)
+			local is_git_ignored = function(filepath)
+				vim.fn.system("git check-ignore -q " .. vim.fn.shellescape(filepath))
+				return vim.v.shell_error == 0
+			end
+
+			local update_left_pane = function()
+				pcall(function()
+					local lib = require("diffview.lib")
+					local view = lib.get_current_view()
+					if view then
+						view:update_files()
+					end
+				end)
+			end
+
+			-- Register handler for file changes in watched directory
+			require("custom.directory-watcher").registerOnChangeHandler("diffview", function(filepath, events)
+				local is_in_dot_git_dir = filepath:match("/%.git/") or filepath:match("^%.git/")
+
+				if is_in_dot_git_dir or not is_git_ignored(filepath) then
+					update_left_pane()
+				end
+			end)
+
+			vim.api.nvim_create_autocmd("FocusGained", {
+				callback = update_left_pane,
+			})
+
+			vim.api.nvim_create_autocmd("User", {
+				pattern = "DiffviewViewLeave",
+				callback = function()
+					vim.cmd(":DiffviewClose")
+				end,
+			})
+
+			require("diffview").setup({
+				default_args = {
+					DiffviewOpen = { "--imply-local" },
+				},
+				keymaps = {
+					view = {
+						{ "n", "q", "<cmd>DiffviewClose<cr>", { desc = "Close diffview" } },
+					},
+					file_panel = {
+						{ "n", "q", "<cmd>DiffviewClose<cr>", { desc = "Close diffview" } },
+					},
+					file_history_panel = {
+						{ "n", "q", "<cmd>DiffviewClose<cr>", { desc = "Close diffview" } },
+					},
+				},
+			})
+		end,
 	},
 	{
 		"cpea2506/one_monokai.nvim",
@@ -1128,6 +1195,32 @@ require("lazy").setup({
 		},
 	},
 })
+
+-- ============================================================================
+-- Claude Code Integration: Directory Watcher, Hot-reload, and Enhanced Yank
+-- Based on: https://xata.io/blog/configuring-neovim-coding-agents
+-- ============================================================================
+
+-- Setup directory watcher for the current git root
+local function setup_directory_watcher()
+	local result = vim.fn.systemlist("git rev-parse --show-toplevel 2>/dev/null")
+	if vim.v.shell_error == 0 and #result > 0 then
+		local git_root = result[1]
+		require("custom.directory-watcher").setup({ path = git_root })
+	end
+end
+
+-- Initialize on startup and when directory changes
+vim.api.nvim_create_autocmd({ "VimEnter", "DirChanged" }, {
+	group = vim.api.nvim_create_augroup("DirectoryWatcherSetup", { clear = true }),
+	callback = function()
+		vim.defer_fn(setup_directory_watcher, 100)
+	end,
+})
+
+-- Setup hotreload for buffer auto-refresh
+require("custom.hotreload").setup()
+
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
