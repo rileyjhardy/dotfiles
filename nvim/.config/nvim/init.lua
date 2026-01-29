@@ -199,6 +199,7 @@ vim.keymap.set("n", "<C-l>", "<C-w><C-l>", { desc = "Move focus to the right win
 vim.keymap.set("n", "<C-j>", "<C-w><C-j>", { desc = "Move focus to the lower window" })
 vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper window" })
 vim.keymap.set("n", "<leader>e", "<Cmd>Neotree toggle<CR>", { desc = "Toggle file [E]xplorer" })
+vim.keymap.set("n", "<leader>f", "<Cmd>Neotree focus<CR>", { desc = "Focus file [E]xplorer" })
 
 -- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
 -- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
@@ -709,7 +710,17 @@ require("lazy").setup({
 			--        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
 			local servers = {
 				-- clangd = {},
-				-- gopls = {},
+				gopls = {
+					settings = {
+						gopls = {
+							analyses = {
+								unusedparams = true,
+							},
+							staticcheck = true,
+							gofumpt = true,
+						},
+					},
+				},
 				-- pyright = {},
 				-- rust_analyzer = {},
 				-- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
@@ -730,8 +741,9 @@ require("lazy").setup({
 							completion = {
 								callSnippet = "Replace",
 							},
-							-- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
-							-- diagnostics = { disable = { 'missing-fields' } },
+							diagnostics = {
+								globals = { "vim" },
+							},
 						},
 					},
 				},
@@ -753,6 +765,8 @@ require("lazy").setup({
 			local ensure_installed = vim.tbl_keys(servers or {})
 			vim.list_extend(ensure_installed, {
 				"stylua", -- Used to format Lua code
+				"goimports", -- Go imports organizer
+				"gofumpt", -- Stricter Go formatter
 			})
 			require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
@@ -818,6 +832,7 @@ require("lazy").setup({
 			formatters_by_ft = {
 				lua = { "stylua" },
 				ruby = { "rubocop" },
+				go = { "goimports", "gofumpt" },
 				-- Conform can also run multiple formatters sequentially
 				-- python = { "isort", "black" },
 				--
@@ -1092,7 +1107,12 @@ require("lazy").setup({
 			ensure_installed = {
 				"bash",
 				"c",
+				"css",
 				"diff",
+				"go",
+				"gomod",
+				"gosum",
+				"gowork",
 				"html",
 				"lua",
 				"luadoc",
@@ -1220,7 +1240,6 @@ vim.api.nvim_create_autocmd({ "VimEnter", "DirChanged" }, {
 
 -- Setup hotreload for buffer auto-refresh
 require("custom.hotreload").setup()
-
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
