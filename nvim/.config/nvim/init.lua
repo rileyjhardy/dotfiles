@@ -1048,12 +1048,28 @@ require("lazy").setup({
 			})
 		end,
 	},
+	-- {
+	-- "cpea2506/one_monokai.nvim",
+	-- lazy = false,
+	-- priority = 1000,
+	-- config = function()
+	-- vim.cmd.colorscheme("one_monokai")
+	-- end,
+	-- },
 	{
-		"cpea2506/one_monokai.nvim",
+		"catppuccin/nvim",
+		name = "catppuccin",
+		priority = 1000,
+		config = function()
+			-- vim.cmd.colorscheme("catppuccin-frappe")
+		end,
+	},
+	{
+		"rebelot/kanagawa.nvim",
 		lazy = false,
 		priority = 1000,
 		config = function()
-			vim.cmd.colorscheme("one_monokai")
+			vim.cmd.colorscheme("kanagawa-wave")
 		end,
 	},
 	-- Highlight todo, notes, etc in comments
