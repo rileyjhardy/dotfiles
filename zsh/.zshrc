@@ -7,7 +7,7 @@ export BROWSER="/Applications/Arc.app/Contents/MacOS/Arc"
 export PATH="/usr/local/bin:/usr/local/sbin:~/bin:$PATH"
 export PATH="/opt/homebrew/bin:$PATH"
 export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
-# export PATH="$HOME/.asdf/shims:$PATH"
+export PATH="$HOME/.asdf/shims:$PATH"
 
 # export PATH="/Users/rhardy/wm/watermarkchurch/tools/scripts:$PATH"
  
