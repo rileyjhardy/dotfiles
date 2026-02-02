@@ -249,6 +249,30 @@ require("lazy").setup({
 	-- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
 	"NMAC427/guess-indent.nvim", -- Detect tabstop and shiftwidth automatically
 
+	{ -- Dashboard/Splash screen
+		"goolord/alpha-nvim",
+		dependencies = { "nvim-tree/nvim-web-devicons" },
+		event = "VimEnter",
+		config = function()
+			local alpha = require("alpha")
+			local theta = require("alpha.themes.theta")
+			local headers = require("custom.dashboard-headers")
+
+			-- Configure the dashboard
+			local config = theta.config
+			config.layout[2] = {
+				type = "text",
+				val = headers.random(),
+				opts = {
+					position = "center",
+					hl = "Normal",
+				},
+			}
+
+			alpha.setup(config)
+		end,
+	},
+
 	-- NOTE: Plugins can also be added by using a table,
 	-- with the first argument being the link and the following
 	-- keys can be used to configure plugin behavior/loading/etc.
