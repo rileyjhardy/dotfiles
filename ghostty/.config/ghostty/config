@@ -1,0 +1,13 @@
+# Ghostty configuration
+# Minimal config - let Kanagawa theme in Tmux/Neovim handle colors
+
+# Match Kanagawa Wave background to avoid flash on launch
+background = 1f1f28
+foreground = dcd7ba
+
+# Font
+font-size = 14
+
+# Window
+window-padding-x = 4
+window-padding-y = 4
