@@ -205,6 +205,9 @@ vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper win
 -- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
 -- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
 
+vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv", { silent = true, desc = "Move selected lines down" })
+vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv", { silent = true, desc = "Move selected lines up" })
+
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -853,7 +856,6 @@ require("lazy").setup({
 			end,
 			formatters_by_ft = {
 				lua = { "stylua" },
-				ruby = { "rubocop" },
 				go = { "goimports", "gofumpt" },
 				-- Conform can also run multiple formatters sequentially
 				-- python = { "isort", "black" },
@@ -986,6 +988,26 @@ require("lazy").setup({
 	},
 	{
 		"pteroctopus/faster.nvim",
+	},
+
+	{ -- Image viewing in Kitty terminal
+		"3rd/image.nvim",
+		build = false, -- disable rock build
+		opts = {
+			backend = "kitty",
+			processor = "magick_cli",
+			integrations = {
+				markdown = {
+					enabled = true,
+					clear_in_insert_mode = false,
+					download_remote_images = true,
+					only_render_image_at_cursor = false,
+					only_render_image_at_cursor_mode = "popup", -- or "inline"
+				},
+			},
+			max_height_window_percentage = 50,
+			hijack_file_patterns = { "*.png", "*.jpg", "*.jpeg", "*.gif", "*.webp", "*.avif" },
+		},
 	},
 
 	{
