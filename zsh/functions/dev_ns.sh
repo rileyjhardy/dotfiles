@@ -17,8 +17,8 @@ dev_ns() {
     tmux new-session -d -s dev_ns -x 120 -y 30 -f ~/.tmux.conf
 
     # Window 1: Development server (rename the default window)
-    tmux rename-window -t dev_ns 'dev-server'
-    tmux send-keys -t dev_ns:dev-server 'bin/dev' Enter
+    tmux rename-window -t dev_ns 'server'
+    tmux send-keys -t dev_ns:server 'bin/dev' Enter
 
     # Window 2: Rails console
     tmux new-window -t dev_ns -n 'console'
@@ -26,8 +26,8 @@ dev_ns() {
     tmux split-window -h -t dev_ns:console  # Split console window horizontally
 
     # Window 3: Neovim
-    tmux new-window -t dev_ns -n 'nvim'
-    tmux send-keys -t dev_ns:nvim 'nvim .' Enter
+    tmux new-window -t dev_ns -n 'code'
+    tmux send-keys -t dev_ns:nvim 'nvim' Enter
 
     # Window 4: Claude Code
     tmux new-window -t dev_ns -n 'claude'
@@ -35,14 +35,14 @@ dev_ns() {
 
     # Attach to the session
     echo "Use 'space-t' as prefix key, 'space-i' to switch windows"
-    echo "In the dev-server window, run 'bin/dev' to start the development server"
+    echo "In the server window, run 'bin/dev' to start the development server"
     tmux attach-session -t dev_ns
 }
 
 # Helper function to start the dev server in the current tmux session
 dev_ns_start_server() {
     if tmux has-session -t dev_ns 2>/dev/null; then
-        tmux send-keys -t dev_ns:dev-server 'bin/dev' Enter
+        tmux send-keys -t dev_ns:server 'bin/dev' Enter
         echo "Starting development server in tmux session..."
     else
         echo "No dev_ns tmux session found. Run 'dev_ns' first."

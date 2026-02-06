@@ -11,3 +11,5 @@ font-size = 14
 # Window
 window-padding-x = 4
 window-padding-y = 4
+auto-update-channel = tip
+
