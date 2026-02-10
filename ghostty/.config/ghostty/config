@@ -7,6 +7,9 @@ foreground = dcd7ba
 
 # Font
 font-size = 14
+font-feature = -calt
+font-feature = -liga
+font-feature = -dlig
 
 # Window
 window-padding-x = 4
