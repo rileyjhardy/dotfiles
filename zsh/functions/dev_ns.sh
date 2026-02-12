@@ -27,7 +27,7 @@ dev_ns() {
 
     # Window 3: Neovim
     tmux new-window -t dev_ns -n 'code'
-    tmux send-keys -t dev_ns:nvim 'nvim' Enter
+    tmux send-keys -t dev_ns:code 'nvim' Enter
 
     # Window 4: Claude Code
     tmux new-window -t dev_ns -n 'claude'
