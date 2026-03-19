@@ -80,14 +80,8 @@ alias ga="git add"
 alias gc="git commit -m"
 alias dcs="docker compose stop"
 # alias run='docker compose run --rm web bundle exec'
-alias hrunp='heroku run rails c -r production'
-alias hruns='heroku run rails c -r staging'
-alias hlogsp='heroku logs --tail -r production'
-alias hlogss='heroku logs --tail -r staging'
 alias n='nvim'
-alias c='cursor'
-alias run='bin/run'
-alias down='docker compose -f docker-compose.dev.yml down'
+alias c='claude'
 
 fix() {
   bin/run bundle exec rubocop --autocorrect
