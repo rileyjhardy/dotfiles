@@ -149,8 +149,8 @@ vim.o.splitbelow = true
 --  It is very similar to `vim.o` but offers an interface for conveniently interacting with tables.
 --   See `:help lua-options`
 --   and `:help lua-options-guide`
-vim.o.list = true
-vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
+vim.o.list = false
+-- vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 
 -- Preview substitutions live, as you type!
 vim.o.inccommand = "split"
@@ -274,6 +274,46 @@ require("lazy").setup({
 
 			alpha.setup(config)
 		end,
+	},
+
+	{
+		"stevearc/oil.nvim",
+		---@module 'oil'
+		opts = {},
+		-- Optional dependencies
+		dependencies = { { "DaikyXendo/nvim-material-icon", opts = {} } },
+
+		config = function()
+			require("oil").setup({
+				view_options = {
+					show_hidden = true,
+					is_always_hidden = function(name, _)
+						local always_hidden = {
+							".git",
+							"node_modules",
+							".DS_Store",
+						}
+						return vim.tbl_contains(always_hidden, name)
+					end,
+				},
+			})
+
+			vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
+		end,
+		-- dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if you prefer nvim-web-devicons
+		-- Lazy loading is not recommended because it is very tricky to make it work correctly in all situations.
+		lazy = false,
+	},
+	{ -- Git status indicators in oil.nvim
+		-- Fork of benomahony/oil-git.nvim which runs git status synchronously,
+		-- causing multi-second hangs in large repos. This fork uses async git
+		-- status, debouncing, and hash-based diffing to avoid blocking the UI.
+		"malewicz1337/oil-git.nvim",
+		dependencies = { "stevearc/oil.nvim" },
+		opts = {
+			debounce_ms = 50,
+			ignore_gitsigns_update = true,
+		},
 	},
 
 	-- NOTE: Plugins can also be added by using a table,
@@ -656,8 +696,7 @@ require("lazy").setup({
 					--
 					-- This may be unwanted, since they displace some of your code
 					if
-						client
-						and client:supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf)
+						client and client:supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf)
 					then
 						map("<leader>th", function()
 							vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf }))
@@ -1125,7 +1164,7 @@ require("lazy").setup({
 			-- Autoinstall languages that are not installed
 			auto_install = true,
 			highlight = {
-				enable = false,
+				enable = true,
 				-- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
 				--  If you are experiencing weird indenting issues, add the language to
 				--  the list of additional_vim_regex_highlighting and disabled languages for indent.
@@ -1154,38 +1193,38 @@ require("lazy").setup({
 	-- require 'kickstart.plugins.indent_line',
 	-- require 'kickstart.plugins.lint',
 	-- require 'kickstart.plugins.autopairs',
-	require("kickstart.plugins.neo-tree"),
+	-- require("kickstart.plugins.neo-tree"),
 	-- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
 	-- Custom neo-tree configuration to show hidden files
-	{
-		"nvim-neo-tree/neo-tree.nvim",
-		keys = {
-			{ "<leader>e", "<Cmd>Neotree toggle<CR>", desc = "Toggle file [E]xplorer" },
-			{ "<leader>f", "<Cmd>Neotree focus<CR>", desc = "Focus file [E]xplorer" },
-		},
-		opts = {
-			filesystem = {
-				filtered_items = {
-					visible = true, -- when true, they will just be displayed differently than normal items
-					hide_dotfiles = false, -- this will hide dotfiles and dotfolders
-					hide_gitignored = false, -- this will hide files and folders that are in .gitignore
-					hide_hidden = false, -- this will hide files and folders starting with a dot
-					hide_by_name = {
-						-- "node_modules"
-					},
-					hide_by_pattern = { -- uses glob style patterns
-						-- "*.meta",
-						-- "*/src/*/index.ts"
-					},
-					never_show = { -- remains hidden even if visible is toggled to true
-						-- ".DS_Store",
-						-- "thumbs.db"
-					},
-				},
-			},
-		},
-	},
+	-- {
+	-- 	"nvim-neo-tree/neo-tree.nvim",
+	-- 	keys = {
+	-- 		{ "<leader>e", "<Cmd>Neotree toggle<CR>", desc = "Toggle file [E]xplorer" },
+	-- 		{ "<leader>f", "<Cmd>Neotree focus<CR>", desc = "Focus file [E]xplorer" },
+	-- 	},
+	-- 	opts = {
+	-- 		filesystem = {
+	-- 			filtered_items = {
+	-- 				visible = true, -- when true, they will just be displayed differently than normal items
+	-- 				hide_dotfiles = false, -- this will hide dotfiles and dotfolders
+	-- 				hide_gitignored = false, -- this will hide files and folders that are in .gitignore
+	-- 				hide_hidden = false, -- this will hide files and folders starting with a dot
+	-- 				hide_by_name = {
+	-- 					-- "node_modules"
+	-- 				},
+	-- 				hide_by_pattern = { -- uses glob style patterns
+	-- 					-- "*.meta",
+	-- 					-- "*/src/*/index.ts"
+	-- 				},
+	-- 				never_show = { -- remains hidden even if visible is toggled to true
+	-- 					-- ".DS_Store",
+	-- 					-- "thumbs.db"
+	-- 				},
+	-- 			},
+	-- 		},
+	-- 	},
+	-- },
 
 	-- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
 	--    This is the easiest way to modularize your config.
