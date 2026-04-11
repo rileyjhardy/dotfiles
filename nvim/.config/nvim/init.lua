@@ -709,7 +709,7 @@ require("lazy").setup({
 			-- See :help vim.diagnostic.Opts
 			vim.diagnostic.config({
 				severity_sort = true,
-				float = { border = "rounded", source = "if_many" },
+				float = { border = "rounded", source = true },
 				underline = { severity = vim.diagnostic.severity.ERROR },
 				signs = vim.g.have_nerd_font and {
 					text = {
@@ -720,7 +720,7 @@ require("lazy").setup({
 					},
 				} or {},
 				virtual_text = {
-					source = "if_many",
+					source = true,
 					spacing = 2,
 					format = function(diagnostic)
 						local diagnostic_message = {
@@ -976,7 +976,7 @@ require("lazy").setup({
 			processor = "magick_cli",
 			integrations = {
 				markdown = {
-					enabled = true,
+					enabled = false, -- disabled until image.nvim handles vim.treesitter.get_parser() returning nil in Neovim 0.12
 					clear_in_insert_mode = false,
 					download_remote_images = true,
 					only_render_image_at_cursor = false,
