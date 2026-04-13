@@ -253,3 +253,5 @@ export PATH="/Users/rileyjhardy/.codeium/windsurf/bin:$PATH"
 # tmux development environment
 source ~/.dotfiles/zsh/functions/dev_ns.sh
 export PATH="$HOME/.local/bin:$PATH"
+export DEVKITPRO=/opt/devkitpro
+export DEVKITARM=/opt/devkitpro/devkitARM
