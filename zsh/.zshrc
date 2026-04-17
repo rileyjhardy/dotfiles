@@ -251,5 +251,5 @@ export PATH="/Users/rileyjhardy/.codeium/windsurf/bin:$PATH"
 # export PATH="/Users/rileyjhardy/.asdf/installs/golang/1.24.1/packages/bin:$PATH"
 
 # tmux development environment
-source ~/.dotfiles/zsh/functions/dev_ns.sh
+source ~/.dotfiles/zsh/functions/ns.sh
 export PATH="$HOME/.local/bin:$PATH"
