@@ -21,4 +21,5 @@
 ## Git
 
 - Commit messages should explain **why** the change was made, not what changed — the diff speaks for itself
-- Keep commit message subjects concise; use the body for motivation and context when needed
+- Keep commit message concise; they should almost always be one sentence. Only use the body if you truly think its a unique situation that requires it. 
+- When commit, group by conceptual units. It's nice to be able to cherry-pick commits when necessary, but that is difficult when we're commiting too much code together.
