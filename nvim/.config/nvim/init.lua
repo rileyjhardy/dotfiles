@@ -1013,6 +1013,7 @@ require("lazy").setup({
 		cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewToggleFiles", "DiffviewFocusFiles", "DiffviewFileHistory" },
 		keys = {
 			{ "<leader>gd", "<cmd>DiffviewOpen<cr>", desc = "[G]it [D]iffview" },
+			{ "<leader>gD", "<cmd>DiffviewOpen origin/staging...HEAD<cr>", desc = "[G]it [D]iffview vs staging" },
 			{ "<leader>gh", "<cmd>DiffviewFileHistory %<cr>", desc = "[G]it File [H]istory" },
 			{ "<leader>gH", "<cmd>DiffviewFileHistory<cr>", desc = "[G]it Branch [H]istory" },
 			{ "<leader>gc", "<cmd>DiffviewClose<cr>", desc = "[G]it Diffview [C]lose" },
