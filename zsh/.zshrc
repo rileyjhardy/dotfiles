@@ -82,6 +82,7 @@ alias dcs="docker compose stop"
 # alias run='docker compose run --rm web bundle exec'
 alias n='nvim'
 alias c='claude'
+alias o='opencode'
 
 fix() {
   bin/run bundle exec rubocop --autocorrect
@@ -252,4 +253,8 @@ export PATH="/Users/rileyjhardy/.codeium/windsurf/bin:$PATH"
 
 # tmux development environment
 source ~/.dotfiles/zsh/functions/ns.sh
+source ~/.dotfiles/zsh/functions/nswt.sh
 export PATH="$HOME/.local/bin:$PATH"
+
+# Support Sync plugin — Honeybadger
+export HONEYBADGER_AUTH_TOKEN="-T57NzFMTsCxYsxxbJp_"
