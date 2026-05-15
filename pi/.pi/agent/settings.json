@@ -1,0 +1,9 @@
+{
+  "defaultModel": "gemma4:26b",
+  "defaultProvider": "ollama",
+  "lastChangelogVersion": "0.74.0",
+  "packages": [
+    "npm:@ollama/pi-web-search",
+    "npm:pi-mcp-adapter"
+  ]
+}
