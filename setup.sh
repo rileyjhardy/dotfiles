@@ -20,7 +20,7 @@ fi
 # Configuration
 DOTFILES_REPO="git@github.com:rileyjhardy/dotfiles.git"
 DOTFILES_DIR="$HOME/.dotfiles"
-PACKAGES=("zsh" "nvim" "git" "tmux" ".claude" "pi")
+PACKAGES=("zsh" "nvim" "git" "tmux" ".claude" "pi" "herdr" "opencode")
 
 # Clone or update dotfiles repository
 if [ ! -d "$DOTFILES_DIR" ]; then
