@@ -1,0 +1,15 @@
+FROM gemma4:26b-mlx
+
+# The agentic-gemma choice: 26b-a4b is a 25.2B MoE with only 3.8B active
+# params, so prefill and generation run in the same speed class as the
+# qwen MoE — unlike the dense 31b, which prefills a 16k agent payload for
+# ~3 minutes. num_ctx must be set or Ollama's default silently truncates
+# agent tool payloads.
+PARAMETER num_ctx 65536
+
+# Coding defaults in case the client does not override sampling. Lower than
+# Gemma's chat default of 1.0 for more deterministic edits and tool calls,
+# while keeping top_p/top_k at Gemma's recommended values.
+PARAMETER temperature 0.3
+PARAMETER top_p 0.95
+PARAMETER top_k 64
