@@ -1,6 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "model": "ollama/gemma4-code",
+  "model": "ollama/qwen3.6:35b-dev",
   "provider": {
     "ollama": {
       "npm": "@ai-sdk/openai-compatible",
@@ -9,28 +9,16 @@
         "baseURL": "http://localhost:11434/v1"
       },
       "models": {
-        "gemma4:31b": {
-          "name": "Gemma 4 31B",
+        "qwen3.6:35b-dev": {
+          "name": "Qwen 3.6 35B Coder (dev, 64k ctx)",
           "tools": true
         },
-        "gemma4:26b": {
-          "name": "Gemma 4 26B",
+        "gemma4:26b-dev": {
+          "name": "Gemma 4 26B MoE (dev, 64k ctx)",
           "tools": true
         },
-        "gemma4:32k": {
-          "name": "Gemma 4 12B (32k ctx)",
-          "tools": true
-        },
-        "gemma4:12b-dev": {
-          "name": "Gemma 4 12B (dev, 64k ctx)",
-          "tools": true
-        },
-        "gemma4-code": {
-          "name": "Gemma 4 26B (tuned)",
-          "tools": true
-        },
-        "qwen3.6:35b-a3b-coding-nvfp4": {
-          "name": "Qwen 3.6 35B A3B Coding (NVFP4)",
+        "gemma4:31b-dev": {
+          "name": "Gemma 4 31B dense (deep, slow prefill)",
           "tools": true
         }
       }
