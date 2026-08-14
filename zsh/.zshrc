@@ -253,7 +253,10 @@ export PATH="/Users/rileyjhardy/.codeium/windsurf/bin:$PATH"
 
 # tmux development environment
 source ~/.dotfiles/zsh/functions/ns.sh
+source ~/.dotfiles/zsh/functions/nsh.sh
 source ~/.dotfiles/zsh/functions/nswt.sh
+source ~/.dotfiles/zsh/functions/nswtrm.sh
+source ~/.dotfiles/zsh/functions/openclaw.sh
 export PATH="$HOME/.local/bin:$PATH"
 
 # Support Sync plugin — Honeybadger

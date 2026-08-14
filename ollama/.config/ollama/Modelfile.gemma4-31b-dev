@@ -7,9 +7,10 @@ FROM gemma4:31b-mlx
 # and drop to 49152 if it spills.
 PARAMETER num_ctx 65536
 
-# Coding defaults in case the client does not override sampling. Lower than
-# Gemma's chat default of 1.0 for more deterministic edits and tool calls,
-# while keeping top_p/top_k at Gemma's recommended values.
-PARAMETER temperature 0.3
+# Google's recommended sampling for gemma4. Thinking models degrade under
+# near-greedy decoding (hesitation, stalling at act-vs-narrate decision
+# points), so don't lower temperature here — let the client override
+# per-request if it wants more deterministic output.
+PARAMETER temperature 1.0
 PARAMETER top_p 0.95
 PARAMETER top_k 64
