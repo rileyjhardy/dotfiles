@@ -27,6 +27,32 @@ _ns_session_name() {
     fi
 }
 
+_ns_wait_for_server() {
+    local dir="${1:-$PWD}"
+    local port code waited=0
+    local timeout=300
+
+    port="$(awk -F= '/^WEB_PORT=/{print $2; exit}' "$dir/.env.local" 2>/dev/null)"
+    port="${port:-3000}"
+
+    # Claude Code connects MCP servers once, at startup, and never retries — so
+    # launching it alongside bin/dev means tidewave is always missing. Docker
+    # publishes the host port before Rails finishes booting, so poll for a real
+    # HTTP response rather than an open socket.
+    echo "ns: waiting for Rails on :$port so claude picks up the tidewave MCP server..."
+    while true; do
+        code="$(curl -s -o /dev/null -m 2 -w '%{http_code}' "http://localhost:$port/tidewave/mcp" 2>/dev/null)"
+        [ "$code" != "000" ] && break
+        if [ "$waited" -ge "$timeout" ]; then
+            echo "ns: no response after ${timeout}s — starting claude without tidewave." >&2
+            return 1
+        fi
+        sleep 2
+        waited=$((waited + 2))
+    done
+    echo "ns: Rails is up on :$port (HTTP $code)."
+}
+
 ns() {
     local checkout_dir
     if ! checkout_dir=$(_ns_checkout_dir); then
@@ -65,7 +91,7 @@ ns() {
         "$shell -i -c 'nvim; exec $shell'"
 
     tmux new-window -t "$session_name" -n 'claude' -c "$checkout_dir" \
-        "$shell -i -c 'claude; exec $shell'"
+        "$shell -i -c '_ns_wait_for_server \"$checkout_dir\"; claude; exec $shell'"
 
     echo "Use 'space-t' as prefix key, 'space-i' to switch windows"
     echo "In the server window, run 'bin/dev' to start the development server"
